@@ -1,10 +1,10 @@
 import { runLiquidCheck } from '@shopify/theme-check-common/dist/test';
 import { describe, expect, it } from 'vitest';
-import { DiscourageSectionBlocks } from './section-blocks.js';
+import { DeprecateSectionBlocks } from './section-blocks.js';
 
 const sectionFile = 'sections/my-section.liquid';
 
-describe('DiscourageSectionBlocks', () => {
+describe('DeprecateSectionBlocks', () => {
   it('reports a section block', async () => {
     const source = `
       {% schema %}
@@ -24,7 +24,7 @@ describe('DiscourageSectionBlocks', () => {
     `;
 
     const offenses = await runLiquidCheck(
-      DiscourageSectionBlocks,
+      DeprecateSectionBlocks,
       source,
       sectionFile,
     );
@@ -54,7 +54,7 @@ describe('DiscourageSectionBlocks', () => {
     `;
 
     const offenses = await runLiquidCheck(
-      DiscourageSectionBlocks,
+      DeprecateSectionBlocks,
       source,
       sectionFile,
     );
@@ -75,7 +75,7 @@ describe('DiscourageSectionBlocks', () => {
     `;
 
     const offenses = await runLiquidCheck(
-      DiscourageSectionBlocks,
+      DeprecateSectionBlocks,
       source,
       sectionFile,
     );
@@ -94,7 +94,7 @@ describe('DiscourageSectionBlocks', () => {
     `;
 
     const offenses = await runLiquidCheck(
-      DiscourageSectionBlocks,
+      DeprecateSectionBlocks,
       source,
       sectionFile,
     );
@@ -106,7 +106,7 @@ describe('DiscourageSectionBlocks', () => {
     const source = `<div>No schema here</div>`;
 
     const offenses = await runLiquidCheck(
-      DiscourageSectionBlocks,
+      DeprecateSectionBlocks,
       source,
       sectionFile,
     );
@@ -132,7 +132,7 @@ describe('DiscourageSectionBlocks', () => {
     `;
 
     const offenses = await runLiquidCheck(
-      DiscourageSectionBlocks,
+      DeprecateSectionBlocks,
       source,
       sectionFile,
     );

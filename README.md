@@ -24,4 +24,4 @@ For more configuration options, see the [Theme Check configuration docs](https:/
 
 | Check                     | Description                        | Applies to    | Default severity |
 | ------------------------- | ---------------------------------- | ------------- | ---------------- |
-| `DiscourageSectionBlocks` | Warns against using section blocks | Section files | `warning`        |
+| `DeprecateSectionBlocks` | Warns against using section blocks | Section files | `warning`        |

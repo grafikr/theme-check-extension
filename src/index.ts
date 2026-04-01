@@ -1,3 +1,3 @@
-import { DiscourageSectionBlocks } from './checks/section-blocks.js';
+import { DeprecateSectionBlocks } from './checks/deprecate-section-blocks.js';
 
-export const checks = [DiscourageSectionBlocks];
+export const checks = [DeprecateSectionBlocks];

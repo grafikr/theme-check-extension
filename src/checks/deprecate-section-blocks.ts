@@ -9,12 +9,12 @@ import {
 } from '@shopify/theme-check-common';
 import type { LiquidCheckDefinition } from '@shopify/theme-check-common';
 
-export const DiscourageSectionBlocks: LiquidCheckDefinition = {
+export const DeprecateSectionBlocks: LiquidCheckDefinition = {
   meta: {
-    code: 'DiscourageSectionBlocks',
-    name: 'Discourage Section Blocks',
+    code: 'DeprecateSectionBlocks',
+    name: 'Deprecate Section Blocks',
     docs: {
-      description: 'This check discourages the use of section blocks.',
+      description: 'This check deprecates the use of section blocks.',
       recommended: true,
     },
     type: SourceCodeType.LiquidHtml,
