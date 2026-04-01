@@ -1,0 +1,24 @@
+{
+  "name": "@grafikr/theme-check-extension",
+  "version": "1.0.0",
+  "author": "Grafikr A/S",
+  "description": "A set of opinionated checks for Shopify themes",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write .",
+    "test": "vitest"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "prettier": "^3.8.1",
+    "vitest": "^4.1.2"
+  },
+  "dependencies": {
+    "@shopify/theme-check-common": "^3.24.0",
+    "typescript": "^6.0.2"
+  }
+}

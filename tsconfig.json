@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "module": "NodeNext",
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "paths": {
+      "@shopify/theme-check-common/dist/test": [
+        "./node_modules/@shopify/theme-check-common/dist/test/index.d.ts"
+      ]
+    }
+  }
+}

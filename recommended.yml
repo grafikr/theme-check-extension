@@ -1,0 +1,3 @@
+DiscourageSectionBlocks:
+  enabled: true
+  severity: warning
