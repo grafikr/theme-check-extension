@@ -22,9 +22,6 @@ For more configuration options, see the [Theme Check configuration docs](https:/
 
 ## Checks
 
-### `DiscourageSectionBlocks`
-
-Warns againt using section blocks.
-
-**Applies to:** Section files (`.liquid` files in the `sections/` directory)  
-**Default severity:** `warning`
+| Check                     | Description                        | Applies to    | Default severity |
+| ------------------------- | ---------------------------------- | ------------- | ---------------- |
+| `DiscourageSectionBlocks` | Warns against using section blocks | Section files | `warning`        |
