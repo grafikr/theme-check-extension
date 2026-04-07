@@ -11,6 +11,9 @@
     "test": "vitest"
   },
   "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@types/node": "^25.5.0",
     "prettier": "^3.8.1",
