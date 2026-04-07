@@ -4,7 +4,6 @@
   "author": "Grafikr A/S",
   "description": "A set of opinionated checks for Shopify themes",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
     "build": "tsc",

@@ -14,7 +14,6 @@
     "module": "NodeNext",
     "rootDir": "src",
     "outDir": "dist",
-    "declaration": true,
     "lib": ["es2022", "dom", "dom.iterable"],
     "paths": {
       "@shopify/theme-check-common/dist/test": [
