@@ -19,7 +19,8 @@
     "access": "public"
   },
   "files": [
-    "dist"
+    "dist",
+    "recommended.yml"
   ],
   "devDependencies": {
     "@types/node": "^25.5.0",
