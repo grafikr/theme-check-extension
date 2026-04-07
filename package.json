@@ -11,6 +11,10 @@
     "test": "vitest"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grafikr/theme-check-extension.git"
+  },
   "files": [
     "dist"
   ],
