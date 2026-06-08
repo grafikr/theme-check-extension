@@ -22,10 +22,10 @@ For more configuration options, see the [Theme Check configuration docs](https:/
 
 ## Checks
 
-| Check                    | Description                                           | Applies to    | Default severity | Enabled by default |
-| ------------------------ | ----------------------------------------------------- | ------------- | ---------------- | ------------------ |
-| `DeprecateSectionBlocks` | Warns against using section blocks                    | Section files | `warning`        | Yes                |
-| `MaxLines`               | Enforces a maximum number of lines per file           | Liquid files  | `warning`        | No                 |
+| Check                    | Description                                 | Applies to    | Default severity | Enabled by default |
+| ------------------------ | ------------------------------------------- | ------------- | ---------------- | ------------------ |
+| `DeprecateSectionBlocks` | Warns against using section blocks          | Section files | `warning`        | Yes                |
+| `MaxLines`               | Enforces a maximum number of lines per file | Liquid files  | `warning`        | No                 |
 
 ### MaxLines
 
@@ -34,9 +34,9 @@ Enforces a maximum number of lines per file to keep files focused and maintainab
 ```yaml
 MaxLines:
   enabled: true
-  max: 300          # maximum number of lines (default: 300)
-  skipBlankLines: false  # ignore blank/whitespace-only lines (default: false)
-  skipComments: false    # ignore Liquid comment blocks and HTML comment lines (default: false)
+  max: 300 # maximum number of lines (default: 300)
+  skipBlankLines: false # ignore blank/whitespace-only lines (default: false)
+  skipComments: false # ignore Liquid comment blocks and HTML comment lines (default: false)
 ```
 
 When `skipComments` is enabled, the following are excluded from the line count:

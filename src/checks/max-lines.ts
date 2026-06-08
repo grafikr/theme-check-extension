@@ -1,4 +1,8 @@
-import { SchemaProp, Severity, SourceCodeType } from '@shopify/theme-check-common';
+import {
+  SchemaProp,
+  Severity,
+  SourceCodeType,
+} from '@shopify/theme-check-common';
 import type { LiquidCheckDefinition } from '@shopify/theme-check-common';
 
 const schema = {

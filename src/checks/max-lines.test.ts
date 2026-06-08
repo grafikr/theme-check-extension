@@ -53,7 +53,9 @@ describe('MaxLines', () => {
       { MaxLines: { enabled: true, max: 2 } },
     );
     expect(offenses).toHaveLength(1);
-    expect(offenses.at(0)?.start.index).toBe(line1.length + 1 + line2.length + 1);
+    expect(offenses.at(0)?.start.index).toBe(
+      line1.length + 1 + line2.length + 1,
+    );
   });
 
   describe('skipBlankLines', () => {
@@ -233,12 +235,7 @@ describe('MaxLines', () => {
 
     it('does not skip a multi-line {%\\n  ...\\n%} block that contains code', async () => {
       // {%\n assign \n%} is not a comment block — all 4 lines count
-      const source = [
-        '<div></div>',
-        '{%',
-        '  assign x = 1',
-        '%}',
-      ].join('\n');
+      const source = ['<div></div>', '{%', '  assign x = 1', '%}'].join('\n');
       const offenses = await check(
         { [sectionFile]: source },
         [MaxLines],
