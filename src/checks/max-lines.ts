@@ -123,7 +123,8 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
         if (countingLineIndices.length <= max) return;
 
         const excessLineIndex = countingLineIndices.at(max);
-        const excessLine = excessLineIndex !== undefined ? lines.at(excessLineIndex) : undefined;
+        const excessLine =
+          excessLineIndex !== undefined ? lines.at(excessLineIndex) : undefined;
         if (excessLineIndex === undefined || excessLine === undefined) return;
 
         const startIndex = lines
