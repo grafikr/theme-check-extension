@@ -59,60 +59,48 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
         const countingLineIndices: number[] = [];
 
         for (const [i, line] of lines.entries()) {
-          if (skipBlankLines && line.trim() === '') {
-            continue;
-          }
+          const isBlank = skipBlankLines && line.trim() === '';
 
-          if (skipComments) {
-            if (state === 'inBlockComment') {
-              if (blockCommentEndRe.test(line)) state = 'normal';
-              continue;
-            }
+          if (!isBlank) {
+            let shouldCount = true;
 
-            if (state === 'inLiquidTag') {
-              if (liquidTagCloseRe.test(line)) {
-                // Closing %} — the whole block was comments; discard buffer
-                liquidTagBuffer = [];
-                state = 'normal';
-                continue;
+            if (skipComments) {
+              if (state === 'inBlockComment') {
+                if (blockCommentEndRe.test(line)) state = 'normal';
+                shouldCount = false;
+              } else if (state === 'inLiquidTag') {
+                if (liquidTagCloseRe.test(line)) {
+                  // Closing %} — the whole block was comments; discard buffer
+                  liquidTagBuffer = [];
+                  state = 'normal';
+                  shouldCount = false;
+                } else if (liquidCommentLineRe.test(line)) {
+                  liquidTagBuffer.push(i);
+                  shouldCount = false;
+                } else {
+                  // Non-comment line inside the tag — not a comment block; flush buffer
+                  countingLineIndices.push(...liquidTagBuffer);
+                  liquidTagBuffer = [];
+                  state = 'normal';
+                }
+              } else if (blockCommentStartRe.test(line)) {
+                if (!blockCommentEndRe.test(line)) state = 'inBlockComment';
+                shouldCount = false;
+              } else if (inlineCommentRe.test(line)) {
+                shouldCount = false;
+              } else if (liquidTagOpenRe.test(line)) {
+                liquidTagBuffer = [i];
+                state = 'inLiquidTag';
+                shouldCount = false;
+              } else if (htmlCommentRe.test(line)) {
+                shouldCount = false;
               }
-
-              if (liquidCommentLineRe.test(line)) {
-                liquidTagBuffer.push(i);
-                continue;
-              }
-              // Non-comment line inside the tag — not a comment block; flush buffer
-              countingLineIndices.push(...liquidTagBuffer);
-              liquidTagBuffer = [];
-              state = 'normal';
-              // fall through to count the current line
             }
 
-            // state === 'normal'
-            if (blockCommentStartRe.test(line)) {
-              if (!blockCommentEndRe.test(line)) {
-                state = 'inBlockComment';
-              }
-
-              continue;
-            }
-
-            if (inlineCommentRe.test(line)) {
-              continue;
-            }
-
-            if (liquidTagOpenRe.test(line)) {
-              liquidTagBuffer = [i];
-              state = 'inLiquidTag';
-              continue;
-            }
-
-            if (htmlCommentRe.test(line)) {
-              continue;
+            if (shouldCount) {
+              countingLineIndices.push(i);
             }
           }
-
-          countingLineIndices.push(i);
         }
 
         // File ended while buffering a liquid tag that turned out not to be a comment block
@@ -120,22 +108,23 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
           countingLineIndices.push(...liquidTagBuffer);
         }
 
-        if (countingLineIndices.length <= max) return;
+        if (countingLineIndices.length > max) {
+          const excessLineIndex = countingLineIndices.at(max);
+          const excessLine =
+            excessLineIndex !== undefined ? lines.at(excessLineIndex) : undefined;
 
-        const excessLineIndex = countingLineIndices.at(max);
-        const excessLine =
-          excessLineIndex !== undefined ? lines.at(excessLineIndex) : undefined;
-        if (excessLineIndex === undefined || excessLine === undefined) return;
+          if (excessLineIndex !== undefined && excessLine !== undefined) {
+            const startIndex = lines
+              .slice(0, excessLineIndex)
+              .reduce((acc, l) => acc + l.length + 1, 0);
 
-        const startIndex = lines
-          .slice(0, excessLineIndex)
-          .reduce((acc, l) => acc + l.length + 1, 0);
-
-        context.report({
-          message: `File has too many lines (${countingLineIndices.length}). Maximum allowed is ${max}.`,
-          startIndex,
-          endIndex: startIndex + excessLine.length,
-        });
+            context.report({
+              message: `File has too many lines (${countingLineIndices.length}). Maximum allowed is ${max}.`,
+              startIndex,
+              endIndex: startIndex + excessLine.length,
+            });
+          }
+        }
       },
     };
   },
