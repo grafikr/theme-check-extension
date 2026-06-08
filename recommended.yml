@@ -1,3 +1,10 @@
 DeprecateSectionBlocks:
   enabled: true
   severity: warning
+
+MaxLines:
+  enabled: false
+  severity: warning
+  max: 300
+  skipBlankLines: false
+  skipComments: false
