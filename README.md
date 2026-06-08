@@ -25,11 +25,11 @@ For more configuration options, see the [Theme Check configuration docs](https:/
 | Check                    | Description                                 | Applies to    | Default severity | Enabled by default |
 | ------------------------ | ------------------------------------------- | ------------- | ---------------- | ------------------ |
 | `DeprecateSectionBlocks` | Warns against using section blocks          | Section files | `warning`        | Yes                |
-| `MaxLines`               | Enforces a maximum number of lines per file | Liquid files  | `warning`        | No                 |
+| `MaxLines`               | Enforces a maximum number of lines per file | Liquid files  | `warning`        | Yes                |
 
 ### MaxLines
 
-Enforces a maximum number of lines per file to keep files focused and maintainable. Disabled by default — enable and configure it in your `.theme-check.yml`:
+Enforces a maximum number of lines per file to keep files focused and maintainable. Override settings in your `.theme-check.yml`:
 
 ```yaml
 MaxLines:
