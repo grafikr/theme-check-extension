@@ -59,7 +59,9 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
         const countingLineIndices: number[] = [];
 
         for (const [i, line] of lines.entries()) {
-          if (skipBlankLines && line.trim() === '') continue;
+          if (skipBlankLines && line.trim() === '') {
+            continue;
+          }
 
           if (skipComments) {
             if (state === 'inBlockComment') {
@@ -74,6 +76,7 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
                 state = 'normal';
                 continue;
               }
+
               if (liquidCommentLineRe.test(line)) {
                 liquidTagBuffer.push(i);
                 continue;
@@ -87,16 +90,26 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
 
             // state === 'normal'
             if (blockCommentStartRe.test(line)) {
-              if (!blockCommentEndRe.test(line)) state = 'inBlockComment';
+              if (!blockCommentEndRe.test(line)) {
+                state = 'inBlockComment';
+              }
+
               continue;
             }
-            if (inlineCommentRe.test(line)) continue;
+
+            if (inlineCommentRe.test(line)) {
+              continue;
+            }
+
             if (liquidTagOpenRe.test(line)) {
               liquidTagBuffer = [i];
               state = 'inLiquidTag';
               continue;
             }
-            if (htmlCommentRe.test(line)) continue;
+
+            if (htmlCommentRe.test(line)) {
+              continue;
+            }
           }
 
           countingLineIndices.push(i);
@@ -109,8 +122,10 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
 
         if (countingLineIndices.length <= max) return;
 
-        const excessLineIndex = countingLineIndices[max]!;
-        const excessLine = lines[excessLineIndex]!;
+        const excessLineIndex = countingLineIndices.at(max);
+        const excessLine = excessLineIndex !== undefined ? lines.at(excessLineIndex) : undefined;
+        if (excessLineIndex === undefined || excessLine === undefined) return;
+
         const startIndex = lines
           .slice(0, excessLineIndex)
           .reduce((acc, l) => acc + l.length + 1, 0);
