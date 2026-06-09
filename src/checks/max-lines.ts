@@ -1,9 +1,5 @@
-import {
-  SchemaProp,
-  Severity,
-  SourceCodeType,
-} from '@shopify/theme-check-common';
 import type { LiquidCheckDefinition } from '@shopify/theme-check-common';
+import { SchemaProp, Severity, SourceCodeType } from '@shopify/theme-check-common';
 
 const schema = {
   max: SchemaProp.number(300),
@@ -37,8 +33,7 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
     code: 'MaxLines',
     name: 'Max Lines',
     docs: {
-      description:
-        'Enforce a maximum number of lines per file to keep files focused and maintainable.',
+      description: 'Enforce a maximum number of lines per file to keep files focused and maintainable.',
       recommended: false,
     },
     type: SourceCodeType.LiquidHtml,
@@ -110,13 +105,10 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
 
         if (countingLineIndices.length > max) {
           const excessLineIndex = countingLineIndices.at(max);
-          const excessLine =
-            excessLineIndex !== undefined ? lines.at(excessLineIndex) : undefined;
+          const excessLine = excessLineIndex !== undefined ? lines.at(excessLineIndex) : undefined;
 
           if (excessLineIndex !== undefined && excessLine !== undefined) {
-            const startIndex = lines
-              .slice(0, excessLineIndex)
-              .reduce((acc, l) => acc + l.length + 1, 0);
+            const startIndex = lines.slice(0, excessLineIndex).reduce((acc, l) => acc + l.length + 1, 0);
 
             context.report({
               message: `File has too many lines (${countingLineIndices.length}). Maximum allowed is ${max}.`,

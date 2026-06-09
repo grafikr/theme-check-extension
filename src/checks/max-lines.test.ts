@@ -20,24 +20,14 @@ describe('MaxLines', () => {
 
   it('reports with a custom max', async () => {
     const source = Array(6).fill('<div></div>').join('\n');
-    const offenses = await check(
-      { [sectionFile]: source },
-      [MaxLines],
-      {},
-      { MaxLines: { enabled: true, max: 5 } },
-    );
+    const offenses = await check({ [sectionFile]: source }, [MaxLines], {}, { MaxLines: { enabled: true, max: 5 } });
     expect(offenses).toHaveLength(1);
     expect(offenses.at(0)?.message).toMatch(/6.*5/);
   });
 
   it('does not report when file equals the max', async () => {
     const source = Array(5).fill('<div></div>').join('\n');
-    const offenses = await check(
-      { [sectionFile]: source },
-      [MaxLines],
-      {},
-      { MaxLines: { enabled: true, max: 5 } },
-    );
+    const offenses = await check({ [sectionFile]: source }, [MaxLines], {}, { MaxLines: { enabled: true, max: 5 } });
     expect(offenses).toHaveLength(0);
   });
 
@@ -46,28 +36,16 @@ describe('MaxLines', () => {
     const line2 = '<div>line2</div>';
     const line3 = '<div>line3</div>';
     const source = [line1, line2, line3].join('\n');
-    const offenses = await check(
-      { [sectionFile]: source },
-      [MaxLines],
-      {},
-      { MaxLines: { enabled: true, max: 2 } },
-    );
+    const offenses = await check({ [sectionFile]: source }, [MaxLines], {}, { MaxLines: { enabled: true, max: 2 } });
     expect(offenses).toHaveLength(1);
-    expect(offenses.at(0)?.start.index).toBe(
-      line1.length + 1 + line2.length + 1,
-    );
+    expect(offenses.at(0)?.start.index).toBe(line1.length + 1 + line2.length + 1);
   });
 
   describe('skipBlankLines', () => {
     it('counts blank lines by default', async () => {
       // 3 content lines + 2 blank lines = 5 total
       const source = Array(3).fill('<div></div>').join('\n\n');
-      const offenses = await check(
-        { [sectionFile]: source },
-        [MaxLines],
-        {},
-        { MaxLines: { enabled: true, max: 4 } },
-      );
+      const offenses = await check({ [sectionFile]: source }, [MaxLines], {}, { MaxLines: { enabled: true, max: 4 } });
       expect(offenses).toHaveLength(1);
     });
 
@@ -86,31 +64,18 @@ describe('MaxLines', () => {
 
   describe('skipComments', () => {
     it('counts liquid comment lines by default', async () => {
-      const source = [
-        '<div></div>',
-        '{% comment %}',
-        'This is a comment',
-        '{% endcomment %}',
-        '<div></div>',
-      ].join('\n');
-      const offenses = await check(
-        { [sectionFile]: source },
-        [MaxLines],
-        {},
-        { MaxLines: { enabled: true, max: 4 } },
+      const source = ['<div></div>', '{% comment %}', 'This is a comment', '{% endcomment %}', '<div></div>'].join(
+        '\n',
       );
+      const offenses = await check({ [sectionFile]: source }, [MaxLines], {}, { MaxLines: { enabled: true, max: 4 } });
       expect(offenses).toHaveLength(1);
     });
 
     it('skips liquid comment blocks when enabled', async () => {
       // 5 lines total, but only 2 non-comment lines
-      const source = [
-        '<div></div>',
-        '{% comment %}',
-        'This is a comment',
-        '{% endcomment %}',
-        '<div></div>',
-      ].join('\n');
+      const source = ['<div></div>', '{% comment %}', 'This is a comment', '{% endcomment %}', '<div></div>'].join(
+        '\n',
+      );
       const offenses = await check(
         { [sectionFile]: source },
         [MaxLines],
@@ -121,13 +86,9 @@ describe('MaxLines', () => {
     });
 
     it('skips liquid comment blocks with dash syntax', async () => {
-      const source = [
-        '<div></div>',
-        '{%- comment -%}',
-        'This is a comment',
-        '{%- endcomment -%}',
-        '<div></div>',
-      ].join('\n');
+      const source = ['<div></div>', '{%- comment -%}', 'This is a comment', '{%- endcomment -%}', '<div></div>'].join(
+        '\n',
+      );
       const offenses = await check(
         { [sectionFile]: source },
         [MaxLines],
@@ -139,11 +100,7 @@ describe('MaxLines', () => {
 
     it('skips HTML comment lines when enabled', async () => {
       // 3 lines, 1 HTML comment — only 2 non-comment lines
-      const source = [
-        '<div></div>',
-        '<!-- this is a comment -->',
-        '<div></div>',
-      ].join('\n');
+      const source = ['<div></div>', '<!-- this is a comment -->', '<div></div>'].join('\n');
       const offenses = await check(
         { [sectionFile]: source },
         [MaxLines],
@@ -155,11 +112,7 @@ describe('MaxLines', () => {
 
     it('skips inline liquid comment blocks', async () => {
       // An inline {% comment %}...{% endcomment %} on one line is still a comment-only line
-      const source = [
-        '<div></div>',
-        '{% comment %}inline{% endcomment %}',
-        '<div></div>',
-      ].join('\n');
+      const source = ['<div></div>', '{% comment %}inline{% endcomment %}', '<div></div>'].join('\n');
       const offenses = await check(
         { [sectionFile]: source },
         [MaxLines],
@@ -170,11 +123,7 @@ describe('MaxLines', () => {
     });
 
     it('skips {% # inline %} comments', async () => {
-      const source = [
-        '<div></div>',
-        '{% # this is an inline comment %}',
-        '<div></div>',
-      ].join('\n');
+      const source = ['<div></div>', '{% # this is an inline comment %}', '<div></div>'].join('\n');
       const offenses = await check(
         { [sectionFile]: source },
         [MaxLines],
@@ -185,11 +134,7 @@ describe('MaxLines', () => {
     });
 
     it('skips {%- # inline -%} comments with dash syntax', async () => {
-      const source = [
-        '<div></div>',
-        '{%- # this is an inline comment -%}',
-        '<div></div>',
-      ].join('\n');
+      const source = ['<div></div>', '{%- # this is an inline comment -%}', '<div></div>'].join('\n');
       const offenses = await check(
         { [sectionFile]: source },
         [MaxLines],
@@ -200,30 +145,14 @@ describe('MaxLines', () => {
     });
 
     it('counts {% # inline %} comments when skipComments is false', async () => {
-      const source = [
-        '<div></div>',
-        '{% # this is an inline comment %}',
-        '<div></div>',
-      ].join('\n');
-      const offenses = await check(
-        { [sectionFile]: source },
-        [MaxLines],
-        {},
-        { MaxLines: { enabled: true, max: 2 } },
-      );
+      const source = ['<div></div>', '{% # this is an inline comment %}', '<div></div>'].join('\n');
+      const offenses = await check({ [sectionFile]: source }, [MaxLines], {}, { MaxLines: { enabled: true, max: 2 } });
       expect(offenses).toHaveLength(1);
     });
 
     it('skips multi-line {%\\n  # ...\\n%} comment blocks', async () => {
       // 6 lines total, only 2 are non-comment
-      const source = [
-        '<div></div>',
-        '{%',
-        '  # line one',
-        '  # line two',
-        '%}',
-        '<div></div>',
-      ].join('\n');
+      const source = ['<div></div>', '{%', '  # line one', '  # line two', '%}', '<div></div>'].join('\n');
       const offenses = await check(
         { [sectionFile]: source },
         [MaxLines],
