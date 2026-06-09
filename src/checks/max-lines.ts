@@ -39,7 +39,7 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
     name: 'Max Lines',
     docs: {
       description: 'Enforce a maximum number of lines per file to keep files focused and maintainable.',
-      recommended: false,
+      recommended: true,
     },
     type: SourceCodeType.LiquidHtml,
     severity: Severity.WARNING,
