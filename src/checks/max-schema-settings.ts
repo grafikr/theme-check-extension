@@ -1,5 +1,4 @@
-import type { LiquidCheckDefinition } from '@shopify/theme-check-common';
-import type { Setting } from '@shopify/theme-check-common';
+import type { LiquidCheckDefinition, Setting } from '@shopify/theme-check-common';
 import { getSchema, isBlock, isSection, SchemaProp, Severity, SourceCodeType } from '@shopify/theme-check-common';
 
 const schema = {
