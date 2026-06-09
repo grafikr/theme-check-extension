@@ -1,3 +1,4 @@
+import type { LiquidCheckDefinition } from '@shopify/theme-check-common';
 import {
   getLocEnd,
   getLocStart,
@@ -7,7 +8,6 @@ import {
   Severity,
   SourceCodeType,
 } from '@shopify/theme-check-common';
-import type { LiquidCheckDefinition } from '@shopify/theme-check-common';
 
 export const DeprecateSectionBlocks: LiquidCheckDefinition = {
   meta: {
@@ -35,12 +35,7 @@ export const DeprecateSectionBlocks: LiquidCheckDefinition = {
 
         const { ast, validSchema } = (await getSchema(context)) ?? {};
 
-        if (
-          !ast ||
-          ast instanceof Error ||
-          !validSchema ||
-          validSchema instanceof Error
-        ) {
+        if (!ast || ast instanceof Error || !validSchema || validSchema instanceof Error) {
           return;
         }
 
