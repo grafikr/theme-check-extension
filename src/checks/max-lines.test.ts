@@ -214,4 +214,47 @@ describe('MaxLines', () => {
       expect(offenses).toHaveLength(0);
     });
   });
+
+  describe('skipDoc', () => {
+    it('skips doc block by default', async () => {
+      // 5 lines total, but only 2 non-doc lines
+      const source = ['<div></div>', '{% doc %}', 'Some docs', '{% enddoc %}', '<div></div>'].join('\n');
+      const offenses = await check({ [sectionFile]: source }, [MaxLines], {}, { MaxLines: { enabled: true, max: 2 } });
+      expect(offenses).toHaveLength(0);
+    });
+
+    it('counts doc block lines when skipDoc is false', async () => {
+      const source = ['<div></div>', '{% doc %}', 'Some docs', '{% enddoc %}', '<div></div>'].join('\n');
+      const offenses = await check(
+        { [sectionFile]: source },
+        [MaxLines],
+        {},
+        { MaxLines: { enabled: true, max: 4, skipDoc: false } },
+      );
+      expect(offenses).toHaveLength(1);
+    });
+
+    it('skips doc block when enabled', async () => {
+      // 5 lines total, but only 2 non-doc lines
+      const source = ['<div></div>', '{% doc %}', 'Some docs', '{% enddoc %}', '<div></div>'].join('\n');
+      const offenses = await check(
+        { [sectionFile]: source },
+        [MaxLines],
+        {},
+        { MaxLines: { enabled: true, max: 4, skipDoc: true } },
+      );
+      expect(offenses).toHaveLength(0);
+    });
+
+    it('skips doc block with dash syntax', async () => {
+      const source = ['<div></div>', '{%- doc -%}', 'Some docs', '{%- enddoc -%}', '<div></div>'].join('\n');
+      const offenses = await check(
+        { [sectionFile]: source },
+        [MaxLines],
+        {},
+        { MaxLines: { enabled: true, max: 2, skipDoc: true } },
+      );
+      expect(offenses).toHaveLength(0);
+    });
+  });
 });

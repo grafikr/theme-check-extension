@@ -6,6 +6,7 @@ const schema = {
   skipBlankLines: SchemaProp.boolean(false),
   skipComments: SchemaProp.boolean(false),
   skipSchema: SchemaProp.boolean(true),
+  skipDoc: SchemaProp.boolean(true),
 };
 
 export const MaxLines: LiquidCheckDefinition<typeof schema> = {
@@ -27,8 +28,12 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
 
     return {
       async LiquidRawTag(node) {
-        const { skipSchema, skipComments } = context.settings;
-        if ((skipSchema && node.name === 'schema') || (skipComments && node.name === 'comment')) {
+        const { skipSchema, skipComments, skipDoc } = context.settings;
+        if (
+          (skipSchema && node.name === 'schema') ||
+          (skipComments && node.name === 'comment') ||
+          (skipDoc && node.name === 'doc')
+        ) {
           skipRanges.push([node.position.start, node.position.end]);
         }
       },
