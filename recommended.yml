@@ -5,3 +5,7 @@ DeprecateSectionBlocks:
 MaxLines:
   enabled: true
   severity: warning
+
+MaxSchemaSettings:
+  enabled: true
+  severity: warning
