@@ -23,11 +23,7 @@ describe('DeprecateSectionBlocks', () => {
       {% endschema %}
     `;
 
-    const offenses = await runLiquidCheck(
-      DeprecateSectionBlocks,
-      source,
-      sectionFile,
-    );
+    const offenses = await runLiquidCheck(DeprecateSectionBlocks, source, sectionFile);
 
     expect(offenses).toHaveLength(1);
   });
@@ -53,11 +49,7 @@ describe('DeprecateSectionBlocks', () => {
       {% endschema %}
     `;
 
-    const offenses = await runLiquidCheck(
-      DeprecateSectionBlocks,
-      source,
-      sectionFile,
-    );
+    const offenses = await runLiquidCheck(DeprecateSectionBlocks, source, sectionFile);
 
     expect(offenses).toHaveLength(2);
   });
@@ -74,11 +66,7 @@ describe('DeprecateSectionBlocks', () => {
       {% endschema %}
     `;
 
-    const offenses = await runLiquidCheck(
-      DeprecateSectionBlocks,
-      source,
-      sectionFile,
-    );
+    const offenses = await runLiquidCheck(DeprecateSectionBlocks, source, sectionFile);
 
     expect(offenses).toHaveLength(0);
   });
@@ -93,11 +81,7 @@ describe('DeprecateSectionBlocks', () => {
       {% endschema %}
     `;
 
-    const offenses = await runLiquidCheck(
-      DeprecateSectionBlocks,
-      source,
-      sectionFile,
-    );
+    const offenses = await runLiquidCheck(DeprecateSectionBlocks, source, sectionFile);
 
     expect(offenses).toHaveLength(0);
   });
@@ -105,11 +89,7 @@ describe('DeprecateSectionBlocks', () => {
   it('does not report when the schema tag is missing', async () => {
     const source = `<div>No schema here</div>`;
 
-    const offenses = await runLiquidCheck(
-      DeprecateSectionBlocks,
-      source,
-      sectionFile,
-    );
+    const offenses = await runLiquidCheck(DeprecateSectionBlocks, source, sectionFile);
 
     expect(offenses).toHaveLength(0);
   });
@@ -131,11 +111,7 @@ describe('DeprecateSectionBlocks', () => {
       {% endschema %}
     `;
 
-    const offenses = await runLiquidCheck(
-      DeprecateSectionBlocks,
-      source,
-      sectionFile,
-    );
+    const offenses = await runLiquidCheck(DeprecateSectionBlocks, source, sectionFile);
 
     expect(offenses).toHaveLength(1);
   });
