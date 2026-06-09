@@ -8,31 +8,6 @@ const schema = {
   skipSchema: SchemaProp.boolean(true),
 };
 
-// {% schema %}...{% endschema %}
-const schemaStartRe = /\{%-?\s*schema\s*-?%\}/;
-const schemaEndRe = /\{%-?\s*endschema\s*-?%\}/;
-
-// {% comment %}...{% endcomment %}
-const blockCommentStartRe = /\{%-?\s*comment\s*-?%\}/;
-const blockCommentEndRe = /\{%-?\s*endcomment\s*-?%\}/;
-
-// {% # inline comment %}
-const inlineCommentRe = /^\s*\{%-?\s*#.*-?%\}\s*$/;
-
-// Opening line of a multi-line tag: just {%  or  {%-  with optional whitespace
-const liquidTagOpenRe = /^\s*\{%-?\s*$/;
-
-// Lines inside a multi-line tag that are comments: leading whitespace then #
-const liquidCommentLineRe = /^\s*#/;
-
-// Closing line of a multi-line tag: %}  or  -%}
-const liquidTagCloseRe = /^\s*-?%\}\s*$/;
-
-// <!-- HTML comment on its own line -->
-const htmlCommentRe = /^\s*<!--.*-->\s*$/;
-
-type State = 'normal' | 'inBlockComment' | 'inLiquidTag' | 'inSchema';
-
 export const MaxLines: LiquidCheckDefinition<typeof schema> = {
   meta: {
     code: 'MaxLines',
@@ -47,75 +22,53 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
   },
 
   create(context) {
+    // Character ranges [start, end] to exclude from line counting (one check instance per file)
+    const skipRanges: Array<[number, number]> = [];
+
     return {
-      async onCodePathStart(file) {
-        const { max, skipBlankLines, skipComments, skipSchema } = context.settings;
+      async LiquidRawTag(node) {
+        const { skipSchema, skipComments } = context.settings;
+        if ((skipSchema && node.name === 'schema') || (skipComments && node.name === 'comment')) {
+          skipRanges.push([node.position.start, node.position.end]);
+        }
+      },
+
+      async LiquidTag(node) {
+        if (context.settings.skipComments && node.name === '#') {
+          skipRanges.push([node.position.start, node.position.end]);
+        }
+      },
+
+      async HtmlComment(node) {
+        if (context.settings.skipComments) {
+          skipRanges.push([node.position.start, node.position.end]);
+        }
+      },
+
+      async onCodePathEnd(file) {
+        const { max, skipBlankLines } = context.settings;
         const lines = file.source.split('\n');
 
-        let state: State = 'normal';
-        // Lines buffered while we determine if a {%...%} block is a comment block.
-        // Flushed to countingLineIndices if a non-comment line appears inside.
-        let liquidTagBuffer: number[] = [];
-        const countingLineIndices: number[] = [];
-
-        for (const [i, line] of lines.entries()) {
-          const isBlank = skipBlankLines && line.trim() === '';
-
-          if (!isBlank) {
-            let shouldCount = true;
-
-            if (skipSchema) {
-              if (state === 'inSchema') {
-                if (schemaEndRe.test(line)) state = 'normal';
-                shouldCount = false;
-              } else if (state === 'normal' && schemaStartRe.test(line)) {
-                state = 'inSchema';
-                shouldCount = false;
-              }
-            }
-
-            if (shouldCount && skipComments) {
-              if (state === 'inBlockComment') {
-                if (blockCommentEndRe.test(line)) state = 'normal';
-                shouldCount = false;
-              } else if (state === 'inLiquidTag') {
-                if (liquidTagCloseRe.test(line)) {
-                  // Closing %} — the whole block was comments; discard buffer
-                  liquidTagBuffer = [];
-                  state = 'normal';
-                  shouldCount = false;
-                } else if (liquidCommentLineRe.test(line)) {
-                  liquidTagBuffer.push(i);
-                  shouldCount = false;
-                } else {
-                  // Non-comment line inside the tag — not a comment block; flush buffer
-                  countingLineIndices.push(...liquidTagBuffer);
-                  liquidTagBuffer = [];
-                  state = 'normal';
-                }
-              } else if (blockCommentStartRe.test(line)) {
-                if (!blockCommentEndRe.test(line)) state = 'inBlockComment';
-                shouldCount = false;
-              } else if (inlineCommentRe.test(line)) {
-                shouldCount = false;
-              } else if (liquidTagOpenRe.test(line)) {
-                liquidTagBuffer = [i];
-                state = 'inLiquidTag';
-                shouldCount = false;
-              } else if (htmlCommentRe.test(line)) {
-                shouldCount = false;
-              }
-            }
-
-            if (shouldCount) {
-              countingLineIndices.push(i);
-            }
-          }
+        // Pre-compute the character offset at which each line starts
+        const lineStartOffsets: number[] = [];
+        let offset = 0;
+        for (const line of lines) {
+          lineStartOffsets.push(offset);
+          offset += line.length + 1;
         }
 
-        // File ended while buffering a liquid tag that turned out not to be a comment block
-        if (liquidTagBuffer.length > 0) {
-          countingLineIndices.push(...liquidTagBuffer);
+        const countingLineIndices: number[] = [];
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i] ?? '';
+          if (skipBlankLines && line.trim() === '') continue;
+
+          const lineStart = lineStartOffsets[i] ?? 0;
+          const lineEnd = lineStart + line.length;
+
+          const isSkipped = skipRanges.some(([s, e]) => lineEnd >= s && lineStart <= e);
+
+          if (!isSkipped) countingLineIndices.push(i);
         }
 
         if (countingLineIndices.length > max) {
@@ -123,8 +76,7 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
           const excessLine = excessLineIndex !== undefined ? lines.at(excessLineIndex) : undefined;
 
           if (excessLineIndex !== undefined && excessLine !== undefined) {
-            const startIndex = lines.slice(0, excessLineIndex).reduce((acc, l) => acc + l.length + 1, 0);
-
+            const startIndex = lineStartOffsets[excessLineIndex] ?? 0;
             context.report({
               message: `File has too many lines (${countingLineIndices.length}). Maximum allowed is ${max}.`,
               startIndex,
