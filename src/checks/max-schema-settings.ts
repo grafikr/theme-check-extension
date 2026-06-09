@@ -1,19 +1,12 @@
 import type { LiquidCheckDefinition } from '@shopify/theme-check-common';
-import {
-  getSchema,
-  isBlock,
-  isSection,
-  SchemaProp,
-  Setting,
-  Severity,
-  SourceCodeType,
-} from '@shopify/theme-check-common';
+import type { Setting } from '@shopify/theme-check-common';
+import { getSchema, isBlock, isSection, SchemaProp, Severity, SourceCodeType } from '@shopify/theme-check-common';
 
 const schema = {
   max: SchemaProp.number(20),
 };
 
-const DISPLAY_ONLY_TYPES = new Set([Setting.Type.Header, Setting.Type.Paragraph]);
+const DISPLAY_ONLY_TYPES = new Set<Setting.Type>(['header', 'paragraph'] as Setting.Type[]);
 
 export const MaxSchemaSettings: LiquidCheckDefinition<typeof schema> = {
   meta: {
