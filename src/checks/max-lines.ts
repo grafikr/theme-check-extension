@@ -5,7 +5,12 @@ const schema = {
   max: SchemaProp.number(300),
   skipBlankLines: SchemaProp.boolean(false),
   skipComments: SchemaProp.boolean(false),
+  skipSchema: SchemaProp.boolean(true),
 };
+
+// {% schema %}...{% endschema %}
+const schemaStartRe = /\{%-?\s*schema\s*-?%\}/;
+const schemaEndRe = /\{%-?\s*endschema\s*-?%\}/;
 
 // {% comment %}...{% endcomment %}
 const blockCommentStartRe = /\{%-?\s*comment\s*-?%\}/;
@@ -26,7 +31,7 @@ const liquidTagCloseRe = /^\s*-?%\}\s*$/;
 // <!-- HTML comment on its own line -->
 const htmlCommentRe = /^\s*<!--.*-->\s*$/;
 
-type State = 'normal' | 'inBlockComment' | 'inLiquidTag';
+type State = 'normal' | 'inBlockComment' | 'inLiquidTag' | 'inSchema';
 
 export const MaxLines: LiquidCheckDefinition<typeof schema> = {
   meta: {
@@ -44,7 +49,7 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
   create(context) {
     return {
       async onCodePathStart(file) {
-        const { max, skipBlankLines, skipComments } = context.settings;
+        const { max, skipBlankLines, skipComments, skipSchema } = context.settings;
         const lines = file.source.split('\n');
 
         let state: State = 'normal';
@@ -59,7 +64,17 @@ export const MaxLines: LiquidCheckDefinition<typeof schema> = {
           if (!isBlank) {
             let shouldCount = true;
 
-            if (skipComments) {
+            if (skipSchema) {
+              if (state === 'inSchema') {
+                if (schemaEndRe.test(line)) state = 'normal';
+                shouldCount = false;
+              } else if (state === 'normal' && schemaStartRe.test(line)) {
+                state = 'inSchema';
+                shouldCount = false;
+              }
+            }
+
+            if (shouldCount && skipComments) {
               if (state === 'inBlockComment') {
                 if (blockCommentEndRe.test(line)) state = 'normal';
                 shouldCount = false;

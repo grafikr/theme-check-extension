@@ -174,4 +174,44 @@ describe('MaxLines', () => {
       expect(offenses).toHaveLength(1);
     });
   });
+
+  describe('skipSchema', () => {
+    it('skips schema block by default', async () => {
+      // 2 content lines + 3 schema lines = 5 total, but only 2 count
+      const source = ['<div></div>', '{% schema %}', '{}', '{% endschema %}', '<div></div>'].join('\n');
+      const offenses = await check({ [sectionFile]: source }, [MaxLines], {}, { MaxLines: { enabled: true, max: 2 } });
+      expect(offenses).toHaveLength(0);
+    });
+
+    it('counts schema lines when skipSchema is false', async () => {
+      const source = ['<div></div>', '{% schema %}', '{}', '{% endschema %}', '<div></div>'].join('\n');
+      const offenses = await check(
+        { [sectionFile]: source },
+        [MaxLines],
+        {},
+        { MaxLines: { enabled: true, max: 2, skipSchema: false } },
+      );
+      expect(offenses).toHaveLength(1);
+    });
+
+    it('skips schema block with dash syntax', async () => {
+      const source = ['<div></div>', '{%- schema -%}', '{}', '{%- endschema -%}', '<div></div>'].join('\n');
+      const offenses = await check({ [sectionFile]: source }, [MaxLines], {}, { MaxLines: { enabled: true, max: 2 } });
+      expect(offenses).toHaveLength(0);
+    });
+
+    it('skips start and end tags as well as inner content', async () => {
+      // Only the two <div> lines should count
+      const source = [
+        '<div></div>',
+        '{% schema %}',
+        '{ "name": "My section",',
+        '  "settings": [] }',
+        '{% endschema %}',
+        '<div></div>',
+      ].join('\n');
+      const offenses = await check({ [sectionFile]: source }, [MaxLines], {}, { MaxLines: { enabled: true, max: 2 } });
+      expect(offenses).toHaveLength(0);
+    });
+  });
 });
