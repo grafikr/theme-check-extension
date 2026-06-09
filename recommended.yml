@@ -2,6 +2,10 @@ DeprecateSectionBlocks:
   enabled: true
   severity: warning
 
+MaxLines:
+  enabled: true
+  severity: warning
+
 MaxSchemaSettings:
   enabled: true
   severity: warning
