@@ -1,3 +1,7 @@
 DeprecateSectionBlocks:
   enabled: true
   severity: warning
+
+MaxSchemaSettings:
+  enabled: true
+  severity: warning
