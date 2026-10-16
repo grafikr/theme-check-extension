@@ -39,7 +39,7 @@ export const DeprecateSectionBlocks: LiquidCheckDefinition = {
           return;
         }
 
-        const offset = node.blockStartPosition.start;
+        const offset = node.blockStartPosition.end;
         validSchema.blocks?.forEach((block, index) => {
           if (!('settings' in block)) {
             return;
