@@ -9,3 +9,7 @@ MaxLines:
 MaxSchemaSettings:
   enabled: true
   severity: warning
+
+RequireSettingDefault:
+  enabled: true
+  severity: warning
