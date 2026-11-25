@@ -5,7 +5,7 @@
     "": {
       "name": "@grafikr/theme-check-extension",
       "dependencies": {
-        "@shopify/theme-check-common": "^3.24.0",
+        "@shopify/theme-check-common": "^4.0.2",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -13,9 +13,9 @@
     },
   },
   "packages": {
-    "@shopify/liquid-html-parser": ["@shopify/liquid-html-parser@2.11.0", "", { "dependencies": { "line-column": "^1.0.2" } }, "sha512-vgrCl9dxPXflxjbEshNXAi/n09pJpyh7RTvHHHQb5AlUw3p7Jz565v+8jNvsaGv8s85MiWkrSW8r9Ojzpx9yMw=="],
+    "@shopify/liquid-html-parser": ["@shopify/liquid-html-parser@2.12.2", "", { "dependencies": { "line-column": "^1.0.2" } }, "sha512-0xK0uvWpJUrzSRh0RF2/srvLV5KT66cjqXErbtqQSYUnkfVHi/R5pgREsWy5+ZmNeNrhQ0MlvX9UbmdphYKk8A=="],
 
-    "@shopify/theme-check-common": ["@shopify/theme-check-common@3.31.0", "", { "dependencies": { "@shopify/liquid-html-parser": "2.11.0", "cross-fetch": "^4.0.0", "jsonc-parser": "^3.2.0", "line-column": "^1.0.2", "lodash": "^4.18.1", "minimatch": "^10.2.1", "postcss": "^8.5.18", "postcss-safe-parser": "^7.0.1", "postcss-selector-parser": "^7.1.6", "vscode-json-languageservice": "^5.3.10", "vscode-uri": "^3.0.7" } }, "sha512-Sala1G15L5AZXrk21kDHBT6o9XneGQfoGdkMTm29vtAdIFdkQO+lLrvDjPMlpassvFXYeno3oJkqXa7GAy04EA=="],
+    "@shopify/theme-check-common": ["@shopify/theme-check-common@4.0.2", "", { "dependencies": { "@shopify/liquid-html-parser": "2.12.2", "cross-fetch": "^4.0.0", "jsonc-parser": "^3.2.0", "line-column": "^1.0.2", "lodash": "^4.18.1", "minimatch": "^10.2.1", "postcss": "^8.5.18", "postcss-safe-parser": "^7.0.1", "postcss-selector-parser": "^7.1.6", "vscode-json-languageservice": "^5.3.10", "vscode-uri": "^3.0.7" } }, "sha512-LRZgHGLbGYrKOsi7FFEKgaOS1MbCjUCYDwHEO0tu9BmN7xl0T2fStvBug+7djltH0YA2aYPKgbgR8LlIIYwqnA=="],
 
     "@types/bun": ["@types/bun@1.4.5", "", { "dependencies": { "bun-types": "1.4.5" } }, "sha512-DpgwNI9z0L1S0gtb45QLCWgwCUcMLnsHYMJHQvpNj7erGiCGBvpggltAIeARrtobNMKMuy0UP7i56tKKgwFs/Q=="],
 
