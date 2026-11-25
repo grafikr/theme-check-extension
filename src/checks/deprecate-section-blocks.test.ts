@@ -1,5 +1,5 @@
 import { runLiquidCheck } from '@shopify/theme-check-common/dist/test';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import { DeprecateSectionBlocks } from './deprecate-section-blocks.js';
 
 const sectionFile = 'sections/my-section.liquid';

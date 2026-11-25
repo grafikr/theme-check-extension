@@ -12,13 +12,11 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "module": "NodeNext",
-    "rootDir": "src",
-    "outDir": "dist",
     "lib": ["es2022", "dom", "dom.iterable"],
     "paths": {
-      "@shopify/theme-check-common/dist/test": [
-        "./node_modules/@shopify/theme-check-common/dist/test/index.d.ts"
-      ]
-    }
+      "@shopify/theme-check-common/dist/test": ["./node_modules/@shopify/theme-check-common/dist/test/index.d.ts"]
+    },
+    "types": ["bun"],
+    "noEmit": true
   }
 }
