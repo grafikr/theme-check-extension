@@ -1,5 +1,5 @@
 import { check, runLiquidCheck } from '@shopify/theme-check-common/dist/test';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import { MaxLines } from './max-lines.js';
 
 const sectionFile = 'sections/my-section.liquid';
