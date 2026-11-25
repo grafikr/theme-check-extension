@@ -9,3 +9,7 @@ MaxLines:
 MaxSchemaSettings:
   enabled: true
   severity: warning
+
+RequireLiquidDoc:
+  enabled: true
+  severity: warning
