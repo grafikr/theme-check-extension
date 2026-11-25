@@ -115,4 +115,46 @@ describe('DeprecateSectionBlocks', () => {
 
     expect(offenses).toHaveLength(1);
   });
+
+  it('highlights the block type value', async () => {
+    const source = `
+      {% schema %}
+      {
+        "name": "My Section",
+        "blocks": [
+          {
+            "type": "text",
+            "name": "Text",
+            "settings": []
+          }
+        ]
+      }
+      {% endschema %}
+    `;
+
+    const offenses = await runLiquidCheck(DeprecateSectionBlocks, source, sectionFile);
+
+    expect(offenses).toHaveLength(1);
+    const [offense] = offenses;
+    expect(source.slice(offense?.start.index, offense?.end.index)).toBe('"text"');
+  });
+
+  it('highlights each section block type value and skips blocks without settings', async () => {
+    const source = `
+      {% schema %}
+      {
+        "name": "My Section",
+        "blocks": [
+          { "type": "text", "name": "Text", "settings": [] },
+          { "type": "heading", "name": "Heading" },
+          { "type": "image", "name": "Image", "settings": [] }
+        ]
+      }
+      {% endschema %}
+    `;
+
+    const offenses = await runLiquidCheck(DeprecateSectionBlocks, source, sectionFile);
+
+    expect(offenses.map((o) => source.slice(o.start.index, o.end.index))).toEqual(['"text"', '"image"']);
+  });
 });
