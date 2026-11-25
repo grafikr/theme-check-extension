@@ -27,3 +27,4 @@ For more configuration options, see the [Theme Check configuration docs](https:/
 | `DeprecateSectionBlocks` | Warns against using section blocks                      | Section files           | `warning`        | Yes                |
 | `MaxLines`               | Enforces a maximum number of lines per file             | Liquid files            | `warning`        | Yes                |
 | `MaxSchemaSettings`      | Enforces a maximum number of settings in a schema block | Section and block files | `warning`        | Yes                |
+| `RequireSettingDefault`  | Requires a default value on configured setting types    | Section and block files | `warning`        | Yes                |
