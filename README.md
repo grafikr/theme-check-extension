@@ -25,5 +25,6 @@ For more configuration options, see the [Theme Check configuration docs](https:/
 | Check                    | Description                                             | Applies to              | Default severity | Enabled by default |
 | ------------------------ | ------------------------------------------------------- | ----------------------- | ---------------- | ------------------ |
 | `DeprecateSectionBlocks` | Warns against using section blocks                      | Section files           | `warning`        | Yes                |
+| `FileNamingConvention` | Enforces file name conventions (default kebab-case) | Snippets, blocks, sections | `warning` | Yes |
 | `MaxLines`               | Enforces a maximum number of lines per file             | Liquid files            | `warning`        | Yes                |
 | `MaxSchemaSettings`      | Enforces a maximum number of settings in a schema block | Section and block files | `warning`        | Yes                |
