@@ -14,8 +14,8 @@ Add the extension to your `.theme-check.yml` configuration:
 
 ```yaml
 extends:
-  - "theme-check:recommended"
-  - "@grafikr/theme-check-extension/recommended.yml"
+  - 'theme-check:recommended'
+  - '@grafikr/theme-check-extension/recommended.yml'
 ```
 
 For more configuration options, see the [Theme Check configuration docs](https://shopify.dev/docs/storefronts/themes/tools/theme-check/configuration).
