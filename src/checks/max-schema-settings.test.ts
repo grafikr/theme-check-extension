@@ -1,5 +1,5 @@
 import { check } from '@shopify/theme-check-common/dist/test';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import { MaxSchemaSettings } from './max-schema-settings.js';
 
 const sectionFile = 'sections/my-section.liquid';

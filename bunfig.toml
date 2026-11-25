@@ -1,0 +1,10 @@
+[fmt]
+printWidth = 120
+singleQuote = true
+ignorePatterns = ["app/types", "bun.lock"]
+
+[install]
+linker = "hoisted"
+
+[lint.rules]
+"sort-imports" = "error"

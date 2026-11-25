@@ -1,0 +1,112 @@
+name: Code Quality
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  generate-reports:
+    name: Generate reports
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install modules
+        run: bun install --frozen-lockfile
+
+      - name: Create reports directory
+        run: mkdir -p .reports
+
+      - name: Run type check
+        run: bun check > .reports/tsc-results.txt 2>&1 || true
+
+      - name: Run format check
+        env:
+          NO_COLOR: '1'
+        run: bun fmt --check > .reports/fmt-results.txt 2>&1 || true
+
+      - name: Convert type check output to rdjson
+        if: always()
+        run: |
+          jq -Rs '
+            {
+              source: {name: "TypeScript"},
+              diagnostics: [
+                scan("<error file=\"(?<path>[^\"]+)\" line=\"(?<line>[0-9]+)\" column=\"(?<col>[0-9]+)\" code=\"(?<code>[^\"]+)\">\\n(?<message>.*?)\\n<source>"; "m") |
+                {path: .[0], line: (.[1] | tonumber), col: (.[2] | tonumber), code: .[3], message: .[4]} |
+                {
+                  message: (.message + " (" + .code + ")"),
+                  location: {
+                    path: .path,
+                    range: {
+                      start: {line: .line, column: .col},
+                      end: {line: .line, column: .col}
+                    }
+                  },
+                  severity: "ERROR",
+                  code: {value: .code}
+                }
+              ]
+            }
+          ' .reports/tsc-results.txt > .reports/tsc.rdjson \
+            || echo '{"source":{"name":"TypeScript"},"diagnostics":[]}' > .reports/tsc.rdjson
+          [ -s .reports/tsc.rdjson ] || echo '{"source":{"name":"TypeScript"},"diagnostics":[]}' > .reports/tsc.rdjson
+          cat .reports/tsc.rdjson
+
+      - name: Convert format check output to rdjson
+        if: always()
+        run: |
+          jq -R -n --arg workspace "$GITHUB_WORKSPACE" '
+            {
+              source: {name: "Format"},
+              diagnostics: [
+                inputs | select(length > 0 and (test("need formatting|^Checked |files? (is|are) formatted") | not)) |
+                {
+                  message: "File is not formatted. Run `bun fmt` to fix.",
+                  location: {
+                    path: ltrimstr($workspace + "/"),
+                    range: {
+                      start: {line: 1, column: 1},
+                      end: {line: 1, column: 1}
+                    }
+                  },
+                  severity: "WARNING",
+                  code: {value: "fmt/format"}
+                }
+              ]
+            }
+          ' .reports/fmt-results.txt > .reports/fmt.rdjson \
+            || echo '{"source":{"name":"Format"},"diagnostics":[]}' > .reports/fmt.rdjson
+          [ -s .reports/fmt.rdjson ] || echo '{"source":{"name":"Format"},"diagnostics":[]}' > .reports/fmt.rdjson
+          cat .reports/fmt.rdjson
+
+      - name: Set up reviewdog
+        if: always()
+        uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+
+      - name: Publish TypeScript check run via reviewdog
+        if: always()
+        continue-on-error: true
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat .reports/tsc.rdjson | reviewdog -f=rdjson -name="TypeScript" -reporter=github-check -filter-mode=nofilter -fail-level=error
+
+      - name: Publish format check run via reviewdog
+        if: always()
+        continue-on-error: true
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat .reports/fmt.rdjson | reviewdog -f=rdjson -name="Format" -reporter=github-check -filter-mode=nofilter -fail-level=error
