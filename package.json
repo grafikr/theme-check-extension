@@ -34,6 +34,6 @@
     "@types/bun": "latest"
   },
   "dependencies": {
-    "@shopify/theme-check-common": "^3.24.0"
+    "@shopify/theme-check-common": "^4.0.2"
   }
 }
